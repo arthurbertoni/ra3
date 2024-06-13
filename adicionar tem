@@ -1,0 +1,28 @@
+import json
+class CafeteriaMenu:
+    def __init__(self, filename='menu.txt'):
+        self.filename = filename
+        self.menu = self.load_menu()
+
+    def load_menu(self):
+        try:
+            with open(self.filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
+
+    def save_menu(self):
+        with open(self.filename, 'w') as file:
+            json.dump(self.menu, file, indent=4)
+
+    def add_item(self, category, item, product, price):
+        if category not in self.menu:
+            self.menu[category] = {}
+        if item not in self.menu[category]:
+            self.menu[category][item] = {}
+        self.menu[category][item][product] = price
+        self.save_menu()
+        print(f"Item '{product}'adicionado em '{item}'na categoria '{category}'com preço R${price:.2f}")
+        if __name__ == "__main__":
+         menu = CafeteriaMenu()
+         menu.add_item("Bebida", "Refrigerante", "Coca Cola", 5.00)
