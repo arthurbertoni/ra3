@@ -1,0 +1,91 @@
+import json
+def carregar_cardapio():
+    try:
+        with open('menu.txt', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+def salvar_cardapio(cardapio):
+    with open('menu.txt', 'w') as file:
+        json.dump(cardapio, file, indent=4)
+def carregar_configuracoes():
+    try:
+        with open('config.txt', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {"nome_restaurante": "", "percentual_garcom": 0}
+def salvar_configuracoes(config):
+    with open('config.txt', 'w') as file:
+        json.dump(config, file, indent=4)
+def adicionar_item(categoria, item, produto, preco):
+    cardapio = carregar_cardapio()
+    if categoria not in cardapio:
+        cardapio[categoria] = {}
+    if item not in cardapio[categoria]:
+        cardapio[categoria][item] = []
+    cardapio[categoria][item].append({"produto": produto, "preco": preco})
+    salvar_cardapio(cardapio)
+def excluir_item(categoria, item, produto):
+    cardapio = carregar_cardapio()
+    if categoria in cardapio and item in cardapio[categoria]:
+        cardapio[categoria][item] = [p for p in cardapio[categoria][item] if p['produto'] != produto]
+        if not cardapio[categoria][item]:
+            del cardapio[categoria][item]
+        if not cardapio[categoria]:
+            del cardapio[categoria]
+        salvar_cardapio(cardapio)
+def alterar_item(categoria, item, produto, novo_preco):
+    cardapio = carregar_cardapio()
+    if categoria in cardapio and item in cardapio[categoria]:
+        for p in cardapio[categoria][item]:
+            if p['produto'] == produto:
+                p['preco'] = novo_preco
+                break
+        salvar_cardapio(cardapio)
+def buscar_item(categoria, item):
+    cardapio = carregar_cardapio()
+    if categoria in cardapio and item in cardapio[categoria]:
+        return cardapio[categoria][item]
+    return []
+def listar_itens():
+    cardapio = carregar_cardapio()
+    return cardapio
+def escolher_itens(lista_de_itens):
+    cardapio = carregar_cardapio()
+    total = 0
+    for categoria, item, produto in lista_de_itens:
+        if categoria in cardapio and item in cardapio[categoria]:
+            for p in cardapio[categoria][item]:
+                if p['produto'] == produto:
+                    total += p['preco']
+                    break
+    config = carregar_configuracoes()
+    percentual_garcom = config.get("percentual_garcom", 0)
+    total_com_garcom = total * (1 + percentual_garcom / 100)
+    return total, total_com_garcom
+def definir_configuracoes(nome_restaurante, percentual_garcom):
+    config = {"nome_restaurante": nome_restaurante, "percentual_garcom": percentual_garcom}
+    salvar_configuracoes(config)
+def main():
+    definir_configuracoes("Café do Ponto", 10)
+    adicionar_item("Bebida", "Refrigerante", "Coca Cola", 5.00)
+    adicionar_item("Bebida", "Refrigerante", "Pepsi", 4.50)
+    adicionar_item("Bebida", "Suco", "Suco de Laranja", 6.00)
+    adicionar_item("Pratos Principais", "Hamburguer", "Hamburguer Simples", 15.00)
+    adicionar_item("Sobremesas", "Sorvete", "Sorvete de Chocolate", 8.00)
+    print("Cardápio:")
+    print(json.dumps(listar_itens(), indent=4))
+    print("\nBuscar Refrigerantes:")
+    print(buscar_item("Bebida", "Refrigerante"))
+    print("\nAlterar preço da Coca Cola para 5.50:")
+    alterar_item("Bebida", "Refrigerante", "Coca Cola", 5.50)
+    print(buscar_item("Bebida", "Refrigerante"))
+    print("\nExcluir Pepsi:")
+    excluir_item("Bebida", "Refrigerante", "Pepsi")
+    print(buscar_item("Bebida", "Refrigerante"))
+    print("\nEscolher itens para compra:")
+    total, total_com_garcom = escolher_itens([("Bebida", "Refrigerante", "Coca Cola"), ("Sobremesas", "Sorvete", "Sorvete de Chocolate")])
+    print(f"Total sem garçom: R${total:.2f}")
+    print(f"Total com garçom: R${total_com_garcom:.2f}")
+if __name__ == "__main__":
+    main()
