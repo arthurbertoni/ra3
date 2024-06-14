@@ -1,0 +1,18 @@
+def remove_item(self, category, item=None, product=None):
+        if category in self.menu:
+            if item and item in self.menu[category]:
+                if product and product in self.menu[category][item]:
+                    del self.menu[category][item][product]
+                    print(f"Produto '{product}' removido do item '{item}' na categoria '{category}'")
+                    if not self.menu[category][item]:  # Remove item if empty
+                        del self.menu[category][item]
+                        print(f"Item '{item}' removido da categoria '{category}' pois ficou vazio")
+                elif not product:
+                    del self.menu[category][item]
+                    print(f"Item '{item}' removido da categoria '{category}'")
+            elif not item:
+                del self.menu[category]
+                print(f"Categoria '{category}' removida do cardápio")
+            self.save_menu()
+        else:
+            print(f"Categoria '{category}' não encontrada no cardápio")
