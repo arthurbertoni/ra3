@@ -45,6 +45,19 @@ class CafeteriaMenu:
             else:
                 return f"Categoria '{category}' não encontrada."
 
+    def calculate_total(self, selections, tip_percentage):
+        total = 0
+        for selection in selections:
+            category, item, product = selection
+            if category in self.menu and item in self.menu[category] and product in self.menu[category][item]:
+                total += self.menu[category][item][product]
+            else:
+                print(f"Produto '{product}' não encontrado em '{item}' na categoria '{category}'.")
+
+        tip = total * (tip_percentage / 100)
+        total_with_tip = total + tip
+        return total, tip, total_with_tip
+
 if __name__ == "__main__":
     menu = CafeteriaMenu()
     menu.add_item("Bebida", "Refrigerante", "Coca Cola", 5.00)
@@ -60,3 +73,15 @@ if __name__ == "__main__":
     print(menu.search_item("Bebida", "Refrigerante", "Coca Cola"))
     print(menu.search_item("Sobremesas", "Pudim", "Pudim de Leite"))
     print(menu.search_item("Pratos Principais", "Massas", "Espaguete"))
+
+selectione = [ 
+            ("Bebida", "Refrigerante", "Coca Cola"),
+             ("Entradas", "Saladas", "Salada Caesar"),
+             ("Sobremesas", "Pudim", "Pudim de Leite")
+             ]
+
+tip_percentage = 10 #10 de gorjeta
+total, tip, total_with_tip = menu.calculate_total(selections, tip_percentage)
+    print(f"Total: R${total:.2f}")
+    print(f"Gorjeta ({tip_percentage}%): R${tip:.2f}")
+    print(f"Total a pagar: R${total_with_tip:.2f}")
