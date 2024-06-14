@@ -1,0 +1,62 @@
+import json
+
+class CafeteriaMenu:
+    def __init__(self, filename='menu.txt'):
+        self.filename = filename
+        self.menu = self.load_menu()
+
+    def load_menu(self):
+        try:
+            with open(self.filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
+
+    def save_menu(self):
+        with open(self.filename, 'w') as file:
+            json.dump(self.menu, file, indent=4)
+
+    def add_item(self, category, item, product, price):
+        if category not in self.menu:
+            self.menu[category] = {}
+        if item not in self.menu[category]:
+            self.menu[category][item] = {}
+        self.menu[category][item][product] = price
+        self.save_menu()
+        print(f"Item '{product}' adicionado em '{item}' na categoria '{category}' com preço R${price:.2f}")
+
+    def update_item(self, category, item, product, new_price):
+        if category in self.menu and item in self.menu[category] and product in self.menu[category][item]:
+            self.menu[category][item][product] = new_price
+            self.save_menu()
+            print(f"Preço do item '{product}' em '{item}' na categoria '{category}' atualizado para R${new_price:.2f}")
+        else:
+            print(f"Item '{product}' não encontrado em '{item}' na categoria '{category}'.")
+
+    def search_item(self, category, item, product):
+        if category in self.menu:
+        if item in self.menu[category]:
+        if product in self.menu[category][item]:
+               return f"Item '{product}' encontrado em '{item}' na categoria '{category}' com preço R${self.menu[category][item][product]:.2f}"
+            else:
+                return f"Produto '{product}' não encontrado em '{item}' na categoria '{category}'."
+            else:
+                return f"Item '{item}' não encontrado na categoria '{category}'."
+            else:
+                return f"Categoria '{category}' não encontrada."
+
+if __name__ == "__main__":
+    menu = CafeteriaMenu()
+    menu.add_item("Bebida", "Refrigerante", "Coca Cola", 5.00)
+    menu.update_item("Bebida", "Refrigerante", "Coca Cola", 8.00)
+
+    menu.add_item("Entradas", "Saladas", "Salada Caesar", 28.00)
+    menu.add_item("Pratos Principais", "Massas", "Spaghetti Carbonara", 45.00)
+    menu.add_item("Pratos Principais", "Carnes", "Picanha", 58.00)
+    menu.add_item("Sobremesas", "Pudim", "Pudim de Leite", 12.00)
+    menu.add_item("Sobremesas", "Sorvetes", "Menta com Chocolate", 9.00)
+
+   
+    print(menu.search_item("Bebida", "Refrigerante", "Coca Cola"))
+    print(menu.search_item("Sobremesas", "Pudim", "Pudim de Leite"))
+    print(menu.search_item("Pratos Principais", "Massas", "Espaguete"))
