@@ -1,0 +1,11 @@
+def search_item(self, category, item, product):
+    if category in self.menu:
+    if item in self.menu[category]:
+     if product in self.menu[category][item]:
+        return f"Item '{product}' encontrado em '{item}' na categoria '{category}' com preço R${self.menu[category][item][product]:.2f}"
+     else:
+        return f"Produto '{product}' não encontrado em '{item}' na categoria '{category}'."
+     else:
+        return f"Item '{item}' não encontrado na categoria '{category}'."
+     else:
+         return f"Categoria '{category}' não encontrada."
