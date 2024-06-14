@@ -1,0 +1,22 @@
+def update_item(self, category, item, product, new_price):
+        if category in self.menu and item in self.menu[category] and product in self.menu[category][item]:
+            self.menu[category][item][product] = new_price
+            self.save_menu()
+            print(f"Preço do item '{product}' em '{item}' na categoria '{category}' atualizado para R${new_price:.2f}")
+        else:
+            print(f"Item '{product}' não encontrado em '{item}' na categoria '{category}'.")
+
+if __name__ == "__main__":
+    menu = CafeteriaMenu()
+    menu.add_item("Bebida", "Refrigerante", "Coca Cola", 5.00)
+    menu.update_item("Bebida", "Refrigerante", "Coca Cola", 8.00)
+
+    menu.add_item("Entradas", "Saladas", "Salada Caesar", 28.00)
+    menu.add_item("Pratos Principais", "Massas", "Spaghetti Carbonara", 45.00)
+    menu.add_item("Pratos Principais", "Carnes", "Picanha", 58.00)
+    menu.add_item("Sobremesas", "Pudim", "Pudim de Leite", 12.00)
+    menu.add_item("Sobremesas", "Sorvetes", "Menta com Chocolate", 9.00)
+
+    print(menu.search_item("Bebida", "Refrigerante", "Coca Cola"))
+    print(menu.search_item("Sobremesas", "Pudim", "Pudim de Leite"))
+    print(menu.search_item("Pratos Principais", "Massas", "Espaguete"))
